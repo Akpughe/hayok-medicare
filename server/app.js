@@ -29,7 +29,13 @@ app.use(express.json({ extended: false }));
 // };
 // app.use(cors(corsOptions));
 
-// app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: true,
+  })
+);
+app.options('*', cors());
 
 app.get('/', (req, res, next) => res.send('API Running...'));
 
