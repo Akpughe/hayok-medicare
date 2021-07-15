@@ -14,6 +14,10 @@ var PatientSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     gender: {
       type: String,
       required: true,
@@ -29,7 +33,7 @@ var PatientSchema = new mongoose.Schema(
     },
     bmi: {
       type: Number,
-      required: true,
+      // required: true,
     },
     ward: {
       type: String,
@@ -38,7 +42,6 @@ var PatientSchema = new mongoose.Schema(
     lga: {
       type: String,
       required: true,
-      enum: ['Single', 'Divorced', 'Married'],
     },
     state: {
       type: String,
@@ -46,14 +49,14 @@ var PatientSchema = new mongoose.Schema(
     },
     picture: {
       type: String,
-      required: true,
+      // required: true,
     },
-    // appointment: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Appointment',
-    //   },
-    // ],
+    encounter: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Encounter',
+      },
+    ],
   },
   { timestamps: true }
 );
