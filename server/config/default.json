@@ -1,5 +1,5 @@
 
 {
-    "mongoURI": "mongodb+srv://davak:zxcvbnmlp@hayok.xk2ty.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "mongoURI": "mongodb+srv://davak:zxcvbnmlp@hayok.xk2ty.mongodb.net/hayok_medic?retryWrites=true&w=majority",
     "jwtSecret": "mysecrettoken"
   }
