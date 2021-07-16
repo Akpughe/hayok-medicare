@@ -9,6 +9,8 @@ const router = express.Router();
 
 router.get('/get-all-patients', patientController.getAllPatients);
 
+router.get('/:patientId', patientController.getPatientById)
+
 router.post(
   '/register',
   [

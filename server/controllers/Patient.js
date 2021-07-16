@@ -16,6 +16,19 @@ exports.getAllPatients = async (req, res, next) => {
   }
 };
 
+exports.getPatientById = async (req, res, next) => {
+  const patientId = req.patientId;
+  try {
+    const puser = await Patient.findById(req.params.patientId).select(
+      '-password'
+    );
+    res.json(puser);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
 exports.register = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -48,8 +61,8 @@ exports.register = async (req, res, next) => {
     // !bmi ||
     !ward ||
     !lga ||
-    !state ||
-    !picture
+    !state
+    // !picture
   )
     return res
       .status(400)
@@ -166,7 +179,7 @@ exports.vitals = async (req, res, next) => {
     bloodPressure,
     weight,
     height,
-    patientId
+    patientId,
   } = req.body;
 
   if (
