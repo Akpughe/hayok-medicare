@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import axios from 'axios';
+import { AuthContext } from '../utils/authContext';
+import { Alert } from 'antd';
 
 const PatientLogin = () => {
   return (
@@ -103,6 +107,54 @@ const PatientLogin = () => {
   );
 };
 const StaffLogin = () => {
+  const { login, logout, isLoggingOut, setIsLoggingOut } =
+    useContext(AuthContext);
+
+  useEffect(() => {
+    if (isLoggingOut) {
+      logout();
+      setIsLoggingOut(false);
+    }
+  }, []);
+
+  const [lastname, setLastname] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const router = useRouter();
+
+  const handleSubmit = () => {
+    axios
+      .post('http://localhost:4000/api/worker/login', {
+        // headers: { 'Content-Type': 'application/json' },
+        lastname,
+        password,
+      })
+      .then((res) => {
+        setIsSubmitting(false);
+
+        login(res.data, rememberMe);
+
+        console.log('Successful' + res.data);
+        <Alert message="Success Tips" type="success" showIcon />;
+
+        return router.push(`/dashboard`);
+      }, 3000)
+      .catch((err) => {
+        console.log(err);
+        <Alert message="Error" type="error" showIcon />;
+        if (!err.response) {
+          alert('failed login');
+        } else if (err.response.status === 500) {
+          alert('failed login');
+        } else {
+          alert('failed login');
+        }
+
+        setIsSubmitting(false);
+      }, 3000);
+  };
   return (
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 shadow-lg bg-white p-5 py-10">
@@ -115,21 +167,28 @@ const StaffLogin = () => {
             Sign in to your account
           </h2>
         </div>
-        <form className="mt-8 space-y-6">
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setIsSubmitting(true);
+            handleSubmit();
+          }}
+        >
           <input type="hidden" name="remember" value="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="staffNumber" className="sr-only">
-                User Number
+                Last name
               </label>
               <input
-                name="userNumber"
+                name="lastname"
                 type="text"
-                //   value={userNumber}
-                //   onChange={(e) => onChange(e)}
+                value={lastname}
+                onChange={(e) => setLastname(e.target.value)}
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="User Number"
+                placeholder="Last name"
               />
             </div>
             <div>
@@ -139,8 +198,8 @@ const StaffLogin = () => {
               <input
                 name="password"
                 type="password"
-                //   value={password}
-                //   onChange={(e) => onChange(e)}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
@@ -154,6 +213,8 @@ const StaffLogin = () => {
                 id="remember_me"
                 name="remember_me"
                 type="checkbox"
+                defaultChecked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
               <label
