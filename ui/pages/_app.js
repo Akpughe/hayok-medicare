@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import '../styles/tailwind.css'
 import Router from 'next/router';
 import NProgress from 'nprogress';
+import 'antd/dist/antd.css';
 import Head from 'next/head'
 import { AuthProvider } from '../utils/authContext';
 
