@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AuthContext } from '../utils/authContext';
 import MainLayout from '../components/MainLayout';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 const register = () => {
   const [formData, setFormData] = useState({
@@ -32,6 +33,8 @@ const register = () => {
     state,
     picture
   } = formData;
+
+  const router = useRouter()
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
