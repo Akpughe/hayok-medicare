@@ -1,9 +1,9 @@
 import '../styles/globals.css';
-import '../styles/tailwind.css'
+import '../styles/tailwind.css';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import 'antd/dist/antd.css';
-import Head from 'next/head'
+import Head from 'next/head';
 import { AuthProvider } from '../utils/authContext';
 
 const showProgressBar = (delay) => {
@@ -20,6 +20,7 @@ const stopProgress = (timer) => {
 Router.events.on('routeChangeStart', () => showProgressBar(300));
 
 function MyApp({ Component, pageProps }) {
+
   return (
     <AuthProvider>
       <Head>

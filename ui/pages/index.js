@@ -164,7 +164,7 @@ const PatientLogin = () => {
   );
 };
 const StaffLogin = () => {
-  const { login, logout, isLoggingOut, setIsLoggingOut, loadUser } =
+  const { login, logout, isLoggingOut, setIsLoggingOut, loadUser, user } =
     useContext(AuthContext);
 
   useEffect(() => {
@@ -184,21 +184,24 @@ const StaffLogin = () => {
   const handleSubmit = () => {
     axios
       .post('http://localhost:4000/api/worker/login', {
-        // headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          // 'x-auth-token': setAuthToken(user.user.token),
+        },
         lastname,
         password,
       })
       .then((res) => {
         setIsSubmitting(false);
-
         login(res.data, rememberMe);
+        console.log(res.data);
 
         // loadUser();
-        console.log('Successful' + res.data);
-        <Alert message="Success Tips" type="success" showIcon />;
+        console.log('Successful');
+        // <Alert message="Success Tips" type="success" showIcon />;
 
         return router.push(`/dashboard`);
-      }, 3000)
+      })
       .catch((err) => {
         console.log(err);
         <Alert message="Error" type="error" showIcon />;

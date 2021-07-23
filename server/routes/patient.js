@@ -7,9 +7,12 @@ const isAuth = require('../middleware/auth');
 
 const router = express.Router();
 
+router.get('/', isAuth, patientController.getPatientById);
+
+
 router.get('/get-all-patients', patientController.getAllPatients);
 
-router.get('/:patientId', patientController.getPatientById)
+router.get('/:patientId', patientController.getPatientsById)
 
 router.post(
   '/register',
