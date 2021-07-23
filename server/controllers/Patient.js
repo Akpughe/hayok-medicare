@@ -6,6 +6,30 @@ const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
+exports.getPatientById = async (req, res, next) => {
+  const userId = req.patientId;
+  try {
+    const user = await Patient.findById(userId)
+      .select('-password')
+      .populate('encounter', [
+        'date',
+        'time',
+        'weight',
+        'height',
+        'bloodPressure',
+        'bmi',
+        'respiratoryRate',
+        'temperature',
+        'diagnosis',
+        'treatment',
+      ]);
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
 exports.getAllPatients = async (req, res, next) => {
   try {
     const patients = await Patient.find();
@@ -16,7 +40,7 @@ exports.getAllPatients = async (req, res, next) => {
   }
 };
 
-exports.getPatientById = async (req, res, next) => {
+exports.getPatientsById = async (req, res, next) => {
   const patientId = req.patientId;
   try {
     const puser = await Patient.findById(req.params.patientId).select(
@@ -71,11 +95,11 @@ exports.register = async (req, res, next) => {
   let newbmi = weight / (height * height);
 
   try {
-    let patient = await Patient.findOne({
+    let user = await Patient.findOne({
       lastname,
     });
 
-    if (patient) {
+    if (user) {
       return res
         .status(400)
         .json({ errors: [{ msg: 'Last name already registered' }] });
@@ -87,7 +111,7 @@ exports.register = async (req, res, next) => {
 
     encryptedPassword = await bcrypt.hash(password, salt);
 
-    patient = new Patient({
+    user = new Patient({
       firstname,
       lastname,
       password: encryptedPassword,
@@ -101,7 +125,7 @@ exports.register = async (req, res, next) => {
       state,
       picture,
     });
-    await patient.save();
+    await user.save();
     res.json({ msg: 'Patient added successfully' + ' ' + lastname });
   } catch (err) {
     console.error(err.message);
@@ -117,14 +141,14 @@ exports.login = async (req, res, next) => {
   const { lastname, password } = req.body;
 
   try {
-    let patient = await Patient.findOne({ lastname });
+    let user = await Patient.findOne({ lastname });
 
-    if (!patient)
+    if (!user)
       return res
         .status(404)
         .json({ errors: [{ msg: 'Last name does not exist' }] });
 
-    const isMatch = await bcrypt.compare(password, patient.password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
@@ -132,26 +156,26 @@ exports.login = async (req, res, next) => {
 
     const token = jwt.sign(
       {
-        lastname: patient.lastname,
-        patientId: patient._id.toString(),
+        lastname: user.lastname,
+        patientId: user._id.toString(),
       },
       config.get('jwtSecret')
     );
 
     res.status(200).json({
       token: token,
-      patient: {
-        firstname: patient.firstname,
-        lastname: patient.lastname,
-        age: patient.age,
-        gender: patient.gender,
-        height: patient.height,
-        weight: patient.weight,
-        bmi: patient.bmi,
-        ward: patient.ward,
-        lga: patient.lga,
-        state: patient.ward,
-        _id: patient._id,
+      user: {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        age: user.age,
+        gender: user.gender,
+        height: user.height,
+        weight: user.weight,
+        bmi: user.bmi,
+        ward: user.ward,
+        lga: user.lga,
+        state: user.ward,
+        _id: user._id,
       },
       msg: 'Login successful',
     });
