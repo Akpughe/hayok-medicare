@@ -4,6 +4,17 @@ const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
+exports.getWorkerById = async (req, res, next) => {
+  const userId = req.userId;
+  try {
+    const user = await Worker.findById(userId).select('-password');
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
 exports.getAllWorkers = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
