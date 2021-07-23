@@ -1,4 +1,4 @@
-const localStorageKey = 'hayok';
+const localStorageKey = 'x-auth-token';
 // import setAuthToken from "./setAuthToken";
 export const getUser = () => {
   try {

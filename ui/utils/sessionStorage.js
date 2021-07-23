@@ -1,4 +1,4 @@
-const sessionStorageKey = 'hayok';
+const sessionStorageKey = 'x-auth-token';
 
 export const getUserFromSession = () => {
   try {
