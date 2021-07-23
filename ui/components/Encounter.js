@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../utils/authContext';
 
 const Encounter = ({ patientId }) => {
+  const { user } = useContext(AuthContext);
+  const token = user.token;
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  // console.log(token);
   const [formData, setFormData] = useState({
     date: '',
     time: '',
@@ -39,8 +42,10 @@ const Encounter = ({ patientId }) => {
     e.preventDefault();
     axios
       .post('http://localhost:4000/api/patient/vitals', {
-        // headers: { 'Content-Type': 'application/json' },
         ...formData,
+        headers: {
+          'x-auth-token': `${token}`,
+        },
       })
       .then((res) => {
         setIsSubmitting(false);
